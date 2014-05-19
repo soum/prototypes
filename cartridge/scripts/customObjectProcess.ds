@@ -1,16 +1,17 @@
 /**
-*-   @input ExampleIn : Object
-*   @output CustomObject : Object
+*   @input ExampleIn : Object  Make sure you remove the - sign from the beginning of each of these lines so that they are not seen as comments
+*   @output orderNumber : String Anything after the type is a comment
+*   @output CustomObject : Object This could also be CustomObject type
 *
 */
 importPackage(dw.system);
 importPackage(dw.catalog);
 importPackage(dw.object);
 importPackage(dw.util);
-
-function execute( pdict : PipelineDictionary ) : Number
+ 
+function execute( args : PipelineDictionary ) : Number
 {
-
+ 
    var primary = 'one';
    var customAttr = 'customAttrOne';
  
@@ -18,13 +19,14 @@ function execute( pdict : PipelineDictionary ) : Number
  
    if(customObject == null){
 // for completeness should check that the return value of the following is not null. If it's null, there was an error in creating the object
-	   customObject  = CustomObjectMgr.createCustomObjec('testObject', primary);
-	   customObject.custom.primary = primary;
-	   customObject.custom.customAttr = customAttr;
+   customObject  = CustomObjectMgr.createCustomObjec('testObject', primary);
+   customObject.custom.primary = primary;
+   customObject.custom.customAttr = customAttr;
    }
-   
-   //pdict.co = customObject;
-   pdict.customObject = CustomObject;
-
+/* The following makes the object available in the output variable. That allows you to set it to a variable from which you can access this
+*  information in the template to verify that the creation worked
+*/
+     args.customObject = CustomObject;
+ 
    return PIPELET_NEXT;
 }

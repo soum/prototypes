@@ -1,2 +1,2 @@
 <!--- TEMPLATENAME: customobjectout.isml --->
-test: ${pdict.customObject}
+test: test
