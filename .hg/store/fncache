@@ -1,0 +1,6 @@
+data/cartridge/scripts/customObjectProcess.ds.i
+data/cartridge/pipelines/CustomObjectProcessing.xml.i
+data/.project.i
+data/cartridge/prototypes.properties.i
+data/cartridge/templates/default/first.isml.i
+data/cartridge/templates/default/customobjectout.isml.i

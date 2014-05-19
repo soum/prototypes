@@ -1,0 +1,30 @@
+/**
+*-   @input ExampleIn : Object
+*   @output CustomObject : Object
+*
+*/
+importPackage(dw.system);
+importPackage(dw.catalog);
+importPackage(dw.object);
+importPackage(dw.util);
+
+function execute( pdict : PipelineDictionary ) : Number
+{
+
+   var primary = 'one';
+   var customAttr = 'customAttrOne';
+ 
+   var customObject : CustomObject = CustomObjectMgr.getCustomObject("testObject", primary);
+ 
+   if(customObject == null){
+// for completeness should check that the return value of the following is not null. If it's null, there was an error in creating the object
+	   customObject  = CustomObjectMgr.createCustomObjec('testObject', primary);
+	   customObject.custom.primary = primary;
+	   customObject.custom.customAttr = customAttr;
+   }
+   
+   //pdict.co = customObject;
+   pdict.customObject = CustomObject;
+
+   return PIPELET_NEXT;
+}
