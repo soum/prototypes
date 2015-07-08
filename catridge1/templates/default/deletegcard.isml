@@ -1,0 +1,3 @@
+<!--- TEMPLATENAME: deletegcard.isml --->
+<iscomment>${pdict.returnObjTest}</iscomment>
+Success message!!

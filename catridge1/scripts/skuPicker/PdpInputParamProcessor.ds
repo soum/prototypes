@@ -1,0 +1,43 @@
+/**
+*	@input CurrentRequest : dw.system.Request
+*	@input CurrentHttpParameterMap : dw.web.HttpParameterMap
+*	@input CurrentSession : dw.system.Session
+*	@output InputParameter : dw.util.HashMap
+*/
+importPackage( dw.system );
+importPackage( dw.util );
+importPackage( dw.web );
+importPackage(dw.catalog);
+
+function execute( pdict : PipelineDictionary ) : Number
+{
+	var _currentRequest = pdict.CurrentRequest;
+	var _currentHttpParameterMap = pdict.CurrentHttpParameterMap;
+	var _parameterObject = new HashMap();
+	var _currentSession = pdict.CurrentSession;
+	var _pipelineCalled = _currentRequest.httpPath.split("/")[_currentRequest.httpPath.split("/").length-1];
+	var validRequest = true;
+	var str = '';
+	
+	switch( _pipelineCalled) {
+		case "SkuPickerNew-ProductColorChips":
+			try{
+				_parameterObject.put("returnObject", "8103637");
+			}catch(e){
+				str = e.message;
+			}
+			break	
+		case "SkuPickerNew-VariationSizeOptions":
+			try{
+				_parameterObject.put("returnObject", "8103637");
+				_parameterObject.put("inventory_ID", "ninewest-inventory");
+				_parameterObject.put("variant_color", _currentHttpParameterMap.colorChip.value); //this will come in via ajax
+			}catch(e){
+				str = e.message;
+			}	
+			break 
+	}
+	
+	pdict.InputParameter = _parameterObject;
+	return PIPELET_NEXT;
+}

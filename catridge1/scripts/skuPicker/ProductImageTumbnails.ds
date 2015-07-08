@@ -1,0 +1,55 @@
+/**
+*   @input product : Object
+*   @input variant_color : String
+*   @output product_thumbnail_images : Object
+*/
+importPackage(dw.system);
+importPackage(dw.util);
+importPackage(dw.object);
+importPackage(dw.catalog);
+importPackage(dw.web);
+
+function execute( pdict : PipelineDictionary ) : Number
+{
+	var product = pdict.product;
+	
+	//var colorVariationValues = product.variationModel.getAllValues(product.variationModel.getProductVariationAttribute('variantColor')); 
+	var product_thumbnail_images = [];
+	
+	var PVM = product.variationModel;
+    var variantFilter = new dw.util.HashMap();
+    variantFilter.put('variantColor', pdict.variant_color); // Only color 150
+    //variantFilter.put('size', '075'); // And size 6
+    var variants = PVM.getVariants(variantFilter)[0]; // Get filtered variants
+    var primary_product_images = [];
+    
+    product_thumbnail_images = {
+    	_thumb : {right_img : variants.getImage('Right',0).getAbsImageURL({scaleWidth:60, scaleHeight:63}).toString(),
+		main_img : variants.getImage('Main',0).getAbsImageURL({scaleWidth:60, scaleHeight:63}).toString(),
+		top_img : variants.getImage('Top',0).getAbsImageURL({scaleWidth:60, scaleHeight:63}).toString(),
+		bottom_img : variants.getImage('Bottom',0).getAbsImageURL({scaleWidth:60, scaleHeight:63}).toString(),
+		back_img : variants.getImage('Back',0).getAbsImageURL({scaleWidth:60, scaleHeight:63}).toString(),
+		front_img : variants.getImage('Front',0).getAbsImageURL({scaleWidth:60, scaleHeight:63}).toString()}
+    }
+	
+	/*for(var i = 0; i < colorVariationValues.length; i++){
+		try{
+			product_thumbnail_images[i]= {
+				_thumb : {_right : colorVariationValues[i].getImage('Right',0).getAbsImageURL({scaleWidth:60, scaleHeight:63}).toString(),
+				_main : colorVariationValues[i].getImage('Main',0).getAbsImageURL({scaleWidth:60, scaleHeight:63}).toString(),
+				_top : colorVariationValues[i].getImage('Top',0).getAbsImageURL({scaleWidth:60, scaleHeight:63}).toString(),
+				_bottom : colorVariationValues[i].getImage('Bottom',0).getAbsImageURL({scaleWidth:60, scaleHeight:63}).toString(),
+				_back : colorVariationValues[i].getImage('Back',0).getAbsImageURL({scaleWidth:60, scaleHeight:63}).toString(),
+				_front : colorVariationValues[i].getImage('Front',0).getAbsImageURL({scaleWidth:60, scaleHeight:63}).toString()}
+			}
+		}catch(e){
+			product_thumbnail_images = e.message;
+		}
+	}*/
+	
+	product_thumbnail_images = JSON.stringify(product_thumbnail_images); //This goes into the pdict as a stringified json
+	
+	pdict.product_thumbnail_images = product_thumbnail_images;
+
+	return PIPELET_NEXT;
+}

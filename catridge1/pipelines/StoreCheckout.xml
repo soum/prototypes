@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?demandware-pipeline version="2.0"?>
+
+<pipeline type="view">
+  <branch basename="ProductOut">
+    <segment>
+      <node>
+        <start-node name="ProductOut" secure="false"/>
+        <node-display x="1" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <call-node start-name-ref="StoreCheckoutUtil-GetProduct"/>
+        <node-display x="0" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <pipelet-node pipelet-name="Script" pipelet-set-identifier="bc_api">
+          <config-property key="Transactional" value="false"/>
+          <config-property key="OnError" value="PIPELET_ERROR"/>
+          <config-property key="ScriptFile" value="StoreCheckout/StoreCheckout.ds"/>
+          <key-binding alias="null" key="ScriptLog"/>
+          <key-binding alias="Product" key="inputObj"/>
+          <key-binding alias="ouputOut" key="ouputOut"/>
+          <key-binding alias="ouputObj" key="ouputObj"/>
+        </pipelet-node>
+        <node-display x="0" y="1"/>
+      </node>
+      <simple-transition>
+        <transition-display>
+          <bend-point relative-to="source" x="0" y="1"/>
+        </transition-display>
+      </simple-transition>
+      <node>
+        <interaction-node transaction-required="false">
+          <template buffered="true" dynamic="false" name="StoreCheckout/productoutput.isml"/>
+        </interaction-node>
+        <node-display x="0" y="1"/>
+      </node>
+    </segment>
+  </branch>
+  <branch basename="Start">
+    <segment>
+      <node>
+        <start-node name="Start" secure="false"/>
+        <node-display x="3" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <pipelet-node pipelet-name="Search" pipelet-set-identifier="bc_api">
+          <config-property key="SearchProduct" value="true"/>
+          <config-property key="SearchContent" value="true"/>
+          <config-property key="DisallowOfflineCategory" value="true"/>
+          <config-property key="RecursiveCategorySearch" value="true"/>
+          <config-property key="RecursiveFolderSearch" value="true"/>
+          <key-binding alias="ProductSearchModel" key="ProductSearchModel"/>
+          <key-binding alias="null" key="SortBy3"/>
+          <key-binding alias="null" key="SortBy2"/>
+          <key-binding alias="null" key="SortBy1Direction"/>
+          <key-binding alias="null" key="SortBy2Direction"/>
+          <key-binding alias="null" key="SortBy3Direction"/>
+          <key-binding alias="null" key="PriceMin"/>
+          <key-binding alias="null" key="RefineBy1Min"/>
+          <key-binding alias="null" key="RefineBy1Max"/>
+          <key-binding alias="null" key="RefineBy2Name"/>
+          <key-binding alias="null" key="RefineBy2Phrase"/>
+          <key-binding alias="null" key="RefineBy2Min"/>
+          <key-binding alias="null" key="RefineBy2Max"/>
+          <key-binding alias="null" key="RefineBy3Name"/>
+          <key-binding alias="null" key="RefineBy3Phrase"/>
+          <key-binding alias="null" key="RefineBy3Min"/>
+          <key-binding alias="null" key="RefineBy3Max"/>
+          <key-binding alias="null" key="RefineBy4Phrase"/>
+          <key-binding alias="null" key="RefineBy4Min"/>
+          <key-binding alias="null" key="RefineBy4Max"/>
+          <key-binding alias="null" key="RefineBy5Name"/>
+          <key-binding alias="null" key="RefineBy5Phrase"/>
+          <key-binding alias="null" key="RefineBy5Min"/>
+          <key-binding alias="null" key="RefineBy5Max"/>
+          <key-binding alias="'2860839'" key="ProductID"/>
+          <key-binding alias="null" key="FolderID"/>
+          <key-binding alias="null" key="ContentID"/>
+          <key-binding alias="null" key="ContentSearchModel"/>
+          <key-binding alias="null" key="RefineByNamePrefix"/>
+          <key-binding alias="null" key="RefineByPhrasePrefix"/>
+          <key-binding alias="null" key="RefineByMinPrefix"/>
+          <key-binding alias="null" key="RefineByMaxPrefix"/>
+          <key-binding alias="null" key="SortingRuleID"/>
+          <key-binding alias="null" key="PromotionID"/>
+          <key-binding alias="null" key="PromotionProductType"/>
+          <key-binding alias="'catalog-id'" key="RefineBy1Name"/>
+          <key-binding alias="dw.catalog.CatalogMgr.getSiteCatalog().ID" key="RefineBy1Phrase"/>
+          <key-binding alias="true" key="OrderableProductsOnly"/>
+        </pipelet-node>
+        <node-display x="0" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <interaction-node transaction-required="false">
+          <template buffered="true" dynamic="false" name="skuPicker/test.isml"/>
+        </interaction-node>
+        <node-display x="0" y="1"/>
+      </node>
+    </segment>
+  </branch>
+</pipeline>

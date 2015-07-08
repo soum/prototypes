@@ -1,0 +1,30 @@
+/**
+*-   @input ExampleIn : Object
+*   @output co : Object
+*
+*/
+importPackage(dw.system);
+importPackage(dw.catalog);
+importPackage(dw.object);
+importPackage(dw.util);
+
+function execute( pdict : PipelineDictionary ) : Number
+{
+
+   var primary_attr = 'three';
+   var secondary_attr = 'customAttrTwo';
+ 
+   var x : CustomObject = CustomObjectMgr.getCustomObject("testObject", primary_attr);
+ 
+   if(!empty(x)){
+	   x.custom.primary_key_attr = primary_attr;
+	   x.custom.csAttrValue = secondary_attr;
+   }else{
+   		var new_x : CustomObject = CustomObjectMgr.createCustomObject('testObject', primary_attr);  
+   		new_x.custom.primary_key_attr = primary_attr;
+	   	new_x.custom.csAttrValue = secondary_attr;
+   }
+   
+   //pdict.co = CustomObject;
+   return PIPELET_NEXT;
+}

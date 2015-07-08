@@ -1,0 +1,30 @@
+<isscript>
+importPackage(dw.system);
+importPackage(dw.util);
+importPackage(dw.object);
+importPackage(dw.catalog);
+importPackage(dw.web);
+
+
+
+var x = pdict.ProductSearchModel.getProducts().asList();	
+var _x = [];
+var new_x = [];
+var out = '';
+for(var i = 0; i < x.length; i++){
+if(!!x[i].isOnline()){
+	out += '<div>' + x[i].ID + '</div>';
+	out += '<div>' + x[i].name + '</div>';
+	out += '<img src="' + x[i].getImage('Main',0).getAbsImageURL({scaleWidth:160}).toString() + '"/>';
+	new_x[i] = x[i].variationModel.getAllValues(x[i].variationModel.getProductVariationAttribute('variantColor'))
+	for(var j = 0; j < new_x[i].length; j++){
+		out += '<img src="' + new_x[i][j].getImage('Color_chip',0).absURL.toString() + '"/>';
+		
+	}
+	out +='<hr>'; 
+	}
+}
+
+</isscript>
+
+<isprint encoding="off" value="${out}"/>

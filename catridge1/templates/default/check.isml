@@ -1,0 +1,12 @@
+<!--- TEMPLATENAME: check.isml --->
+${pdict.checkCo}
+
+<!--- TEMPLATENAME: collectionProcessor.isml --->
+
+<isloop iterator="${pdict.collectionProcessor}" alias="item" status="status">
+  <isprint value="${item.custom['ORDER_UPC']}"/> <BR>
+  <isif condition="${status.index >= 2}">
+  	<div>show more...</div>
+    <isbreak/>
+  </isif>
+</isloop>

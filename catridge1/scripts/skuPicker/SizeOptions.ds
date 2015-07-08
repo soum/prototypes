@@ -1,0 +1,42 @@
+/**
+*	@input product : Object
+*	@input variant_color : Object
+*	@input inventory_ID : String
+*	@output variation_information : Object
+*
+*/
+
+importPackage(dw.system);
+importPackage(dw.util);
+importPackage(dw.object);
+importPackage(dw.catalog);
+importPackage(dw.web);
+
+function execute( pdict : PipelineDictionary ) : Number
+{
+	var product = pdict.product;
+	//var variants = pdict.product.variationModel.variants; // redundant
+	var xxx = [];
+	
+	//executes to return available sizes
+	var invList = ProductInventoryMgr.getInventoryList(pdict.inventory_ID);
+	
+	var PVM = product.variationModel;
+    var variantFilter = new dw.util.HashMap();
+    variantFilter.put('variantColor', pdict.variant_color); // Only color 150
+    var variants = PVM.getVariants(variantFilter); // Get filtered variants
+	
+	for(var i = 0 ; i < variants.length; i++) {
+		if(!!invList.getRecord(variants[i].ID).stockLevel.available){
+	    	xxx[i] = {
+	    		_size : variants[i].custom['variantSize'],
+	    		_width : variants[i].custom['variantWidth'],
+	    		_UPC : variants[i].UPC,
+	    	}
+		}   
+	}
+	
+	xxx = JSON.stringify(xxx);
+	pdict.variation_information = xxx;
+	return PIPELET_NEXT;
+}

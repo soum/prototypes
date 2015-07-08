@@ -1,0 +1,37 @@
+/**
+*   @input product : Object
+*   @input variant_color : String
+*	@input inventory_ID : String
+*   @output primary_product_images : String
+*/
+importPackage(dw.system);
+importPackage(dw.util);
+importPackage(dw.object);
+importPackage(dw.catalog);
+importPackage(dw.web);
+
+function execute( pdict : PipelineDictionary ) : Number
+{
+	var product = pdict.product;
+	var PVM = product.variationModel;
+    var variantFilter = new dw.util.HashMap();
+    variantFilter.put('variantColor', pdict.variant_color);
+    //variantFilter.put('size', '075'); // And size 6
+    var variants = PVM.getVariants(variantFilter)[0]; // Get filtered variants
+    var primary_product_images = [];
+    
+    primary_product_images = {
+    	right_img : variants.getImage('Right',0).absURL.toString(),
+		main_img : variants.getImage('Main',0).absURL.toString(),
+		top_img : variants.getImage('Top',0).absURL.toString(),
+		bottom_img : variants.getImage('Bottom',0).absURL.toString(),
+		back_img : variants.getImage('Back',0).absURL.toString(),
+		front_img : variants.getImage('Front',0).absURL.toString()
+	}
+		
+	
+	primary_product_images = JSON.stringify(primary_product_images);
+	pdict.primary_product_images = primary_product_images;
+
+	return PIPELET_NEXT;
+}

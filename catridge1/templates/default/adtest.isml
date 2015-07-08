@@ -1,0 +1,25 @@
+<!--- TEMPLATENAME: adtest.isml --->
+${pdict.Address}
+<isscript>
+importPackage(dw.system);
+importPackage(dw.util);
+importPackage(dw.web);
+importPackage(dw.object);
+importPackage(dw.net);
+
+var httpClient : HTTPClient = new HTTPClient();
+	var messageOut = '';
+	var testUrl = URLUtils.http('AddressOutTest-StartTwo');
+	httpClient.open('GET', testUrl);
+	httpClient.send();
+	
+	if (httpClient.statusCode == 200){
+			messageOut = httpClient.statusCode;
+		}
+	 else
+	 {
+	     // error handling
+	     messageOut ="Error code: "+httpClient.statusCode;
+	 }
+</isscript>
+${messageOut}

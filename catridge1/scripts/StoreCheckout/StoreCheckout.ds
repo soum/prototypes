@@ -1,0 +1,95 @@
+/**
+*   @input inputObj : Object
+*   @output ouputObj : Object
+*
+*/
+importPackage(dw.system);
+importPackage(dw.util);
+importPackage(dw.object);
+importPackage(dw.catalog);
+importPackage(dw.web);
+
+
+
+function execute( pdict : PipelineDictionary ) : Number
+{
+
+	var product = pdict.inputObj;
+	var PVM = product.variationModel;
+	
+	var varAttrColor = PVM.getProductVariationAttribute('variantColor');
+	var colorVariationValues = PVM.getAllValues(varAttrColor); 
+	
+	// color chips are constructed here
+	var color_chip_object = [];
+	
+	for(var i = 0; i < colorVariationValues.length; i++){
+		try{
+			color_chip_object[i]= {
+				color_id : colorVariationValues[i].ID,
+				chip_img : colorVariationValues[i].getImage('Color_chip',0).absURL.toString()
+			}
+		}catch(e){
+			color_chip_object = e.message;
+		}
+	}
+	
+	
+	// size and width objects are constrcted here
+	var xxx = [];
+	
+	var invList = ProductInventoryMgr.getInventoryList("easyspirit-inventory");
+	var default_color = product.custom['defaultProductColorCode'];
+	
+	
+    var variantFilter = new dw.util.HashMap();
+    variantFilter.put('variantColor', default_color); // this cant be hard coded!!
+    var variants = PVM.getVariants(variantFilter); // Get filtered variants
+	
+	for(var i = 0 ; i < variants.length; i++) {
+		try{
+		if(!!invList.getRecord(variants[i].ID).stockLevel.available){
+	    	xxx[i] = {
+	    		//_available : variants[i].isAvailable(),
+	    		//_color : variants[i].custom['variantColor'],
+	    		_size : variants[i].custom['variantSize'],
+	    		_width : variants[i].custom['variantWidth'],
+	    		//_UPC : variants[i].UPC,
+	    	}
+		}
+		}catch(e){
+			xxx = e.message;
+		}   
+	}
+	
+	//sorting the array...god knows why there is that lone ranger 075 in the front..extra step
+	xxx = xxx.sort(function(a, b){return a._size-b._size});
+	
+	//This is only valid to get the default section option model
+	 
+	var _x = xxx.reduce(function(p,v){
+    var existing = p.filter(function(item){return item.new_size === v._size})[0];
+    if (existing){
+        existing.width_group.push( v._width );
+    } else {
+        p.push( {
+            new_size: v._size,
+            width_group:[v._width]
+        } );
+    }
+    return p;
+	},[]);
+	
+	var new_obj = {
+		chips :  color_chip_object,
+		default_selection : _x
+	} 
+	
+	var out = JSON.stringify(new_obj);
+
+	
+	pdict.ouputObj = out;
+	
+	
+	return PIPELET_NEXT;
+}

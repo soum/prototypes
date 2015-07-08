@@ -1,0 +1,36 @@
+<!--- TEMPLATENAME: xmlout.isml --->
+
+<isscript>
+importPackage(dw.system);
+importPackage(dw.util);
+importPackage(dw.object);
+importPackage(dw.catalog);
+
+var y = 'P0000004';
+
+var x_new = '';
+var x = CustomObjectMgr.queryCustomObjects("PHONE_ORDER", "custom.ORDER_NUMBER LIKE '" + y + "'", null).asList();
+
+for(var i = 0; i< x.length; i++){
+	x_new += x[i].custom['ORDER_STATUS'] + '/';
+}
+
+var returnVal = '';
+var invList = ProductInventoryMgr.getInventoryList('2732-store-inventory'); // retriving the list
+var newRecord = invList.getRecord('033784230417').getATS().getValue();
+if(newRecord != null){
+	if(newRecord > 3){
+		returnVal = "there"
+	}if(returnVal <= 3){
+		returnVal = "call ahead"
+	}
+}else{
+	returnVal = "not there"
+}
+</isscript>
+
+test : ${x_new}
+<hr>
+test2 : ${returnVal}
+<hr>
+

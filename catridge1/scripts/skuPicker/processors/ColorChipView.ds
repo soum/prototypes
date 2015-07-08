@@ -1,0 +1,52 @@
+/**
+*
+*   @input InputObj : Object
+*   @output OutputObj : Object
+*
+*/
+importPackage( dw.system );
+
+function execute( pdict : PipelineDictionary ) : Number
+{
+	var x = pdict.InputObj;
+	/*for(var i = 0; i < x.length; i++){
+		//out += 
+	}*/
+	var color_options = x.productOptions.variantColors;
+	var keys_colors = [];
+	for(var key in color_options){
+		keys_colors.push(key);
+	}
+	
+	var out= '';
+	for(var i = 0; i < keys_colors.length; i++){
+	 out += '<img class="color_chip_img" title="'+ color_options[keys_colors[i]].ID +'" src="' + color_options[keys_colors[i]].asset + '"/>';
+	}
+	
+	var sizes = x.productOptions.variantSizes;
+	var keys_sizes = [];
+	for(var key in sizes){
+		keys_sizes.push(key);
+	}
+	out += '<div class="error_message"></div>';
+	out += '<div class="size_wrapper">';
+	for(var i = 0; i < keys_sizes.length; i++){
+		out += '<div id="'+ sizes[keys_sizes[i]].ID +'" class="sizes">' + sizes[keys_sizes[i]].displayName + '</div>';
+	}
+	out += '</div>';
+	
+	var width = x.productOptions.variantWidths;
+	var keys_widths = [];
+	for(var key in width){
+		keys_widths.push(key);
+	}
+	
+	out += '<div class="width_wrapper">';
+	for(var i = 0; i < keys_widths.length; i++){
+		out += '<div class="widths">' + width[keys_widths[i]].displayName + '</div>';
+	}
+	out += '</div>';
+	
+	pdict.OutputObj = out;
+	return PIPELET_NEXT;
+}

@@ -1,0 +1,35 @@
+/**
+*   @input product : Object
+*   @output variationModel : Object
+*/
+importPackage(dw.system);
+importPackage(dw.util);
+importPackage(dw.object);
+importPackage(dw.catalog);
+importPackage(dw.web);
+
+function execute( pdict : PipelineDictionary ) : Number
+{
+	var product = pdict.product;
+	
+	//This stays in the first pipeline
+	var colorVariationValues = product.variationModel.getAllValues(product.variationModel.getProductVariationAttribute('variantColor')); 
+	var color_chip_object = [];
+	
+	for(var i = 0; i < colorVariationValues.length; i++){
+		try{
+			color_chip_object[i]= {
+				color_id : colorVariationValues[i].ID,
+				chip_img : colorVariationValues[i].getImage('Color_chip',0).absURL.toString()
+			}
+		}catch(e){
+			color_chip_object = e.message;
+		}
+	}
+	
+	color_chip_object = JSON.stringify(color_chip_object); //This goes into the pdict as a stringified json
+	
+	pdict.variationModel = color_chip_object;
+
+	return PIPELET_NEXT;
+}

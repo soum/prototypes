@@ -1,0 +1,37 @@
+<iscomment><isprint value="${pdict.variationModel}" encoding="off"/></iscomment>
+<form id="variationForm">
+<input type="radio" name="group" value="variations,mainImage,thumbnails">Main images, Thumbnails and variations<br>
+<input type="radio" name="group" value="mainImage,thumbnails">Main image and Thumbnails<br>
+</form>
+<isloop iterator="${JSON.parse(pdict.variationModel)}" alias="_out">
+	<img src="${_out.chip_img}" id="${_out.color_id}" class="colorChip"/>
+</isloop>
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script>
+jQuery(document).ready(function() {
+	jQuery('#variationForm').on('change', function(){
+		_outputType = jQuery('input:checked').val()
+	
+		jQuery('.colorChip').on('click',function(){
+		
+			var _colorChip = jQuery(this).attr('id');
+		
+		    jQuery.ajax({
+		    	type: "POST",
+				dataType: 'html',
+				url: "${URLUtils.url('SkuPickerNew-VariationSizeOptions')}",
+				data: {colorChip : _colorChip, outputType : _outputType}
+		    }).done(function(data){
+		    	jQuery('.cell').html(data);
+		    	
+		    });
+	    });
+	});
+});
+</script>
+
+<div class="cell"></div>
+
+<div class="contentHere"></div>
+

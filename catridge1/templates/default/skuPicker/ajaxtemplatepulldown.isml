@@ -1,0 +1,201 @@
+<iscache type="relative" hour="4">
+<!DOCTYPE html>
+<html>
+<head>
+<title>PDP prototype (pulldown)</title>
+<script src="${URLUtils.staticURL('/lib/js/jquery.1.8.2.min.js')}" type="text/javascript"></script>
+</head>
+
+<body>
+
+<div class="color_chip_wrapper">
+	<isprint value="${pdict.ObjOut}" encoding="off"/>
+</div>
+<script>
+$( document ).ready(function() {
+	var _obj = function xxx(){
+		obj = {
+			token : 'hsavfbf', 
+			returnObject : 'ProductMaster,VariationProducts',
+			pid : '2860839',
+			color : '',
+			size : ''
+		}
+	};
+	
+	$('.color_chip_img').on('click', function(){
+		$('.color_chip_img').removeClass('color_chip_img_active');
+		$(this).addClass('color_chip_img_active');
+		_obj.obj = {
+				token : 'hsavfbf', 
+				returnObject : 'ProductMaster,VariationProducts',
+				pid : '2860839',
+				color : $(this).attr('title')
+			}
+		color(_obj.obj);
+	})
+	
+	
+	function color(_color){
+		$.ajax({
+			type: "POST",
+			dataType: 'html',
+			url: "${URLUtils.url('FluidProduct-GetProductAvailability')}",
+			data: _obj.obj 
+		}).done(function(data){
+			var data = JSON.parse(data);
+			var x = data.response.productMaster.variationProducts;
+			
+			$('.sizes').removeClass('not_available');
+			$('.sizes').removeClass('available_size');
+			if(!!x){
+				$('.sizes').each(function(){
+					$(this).addClass('not_available');
+					for(var i = 0; i < x.length; i++){
+						if($(this).attr('id') == x[i].variantSize){
+							$(this).addClass('available_size');
+							$(this).removeClass('not_available');
+						}
+						
+					}
+					
+					
+				});
+				
+				$('.size_wrapper').on('change', function(){
+					
+					var match_width = [];
+					for(var i = 0; i < x.length; i++){
+						if($(this).find(':selected').attr('id') == x[i].variantSize){
+							match_width.push(x[i]);		
+						}
+					}
+					console.log(match_width)
+					$('.widths').removeClass('has_width');
+					$('.widths').each(function(){
+						$(this).addClass('no_available_width');
+						for(var i = 0; i < match_width.length; i++){
+							if($(this).text() == match_width[i].variantWidth){
+								$(this).addClass('has_width');
+								$(this).removeClass('no_available_width');
+							}
+						}
+					})
+				})	
+				
+				$('.error_message').html('');			
+			}
+				
+			
+		});
+	}
+	
+	//If the color chip is not passed in first
+	
+	if($('.color_chip_img_active').length == 0){
+		$('.size_wrapper').on('change', function(){
+			
+			$('.color_chip_img').removeClass('availableColor');
+			
+			_obj.obj = {
+					token : 'hsavfbf', 
+					returnObject : 'ProductMaster,VariationProducts',
+					pid : '2860839',
+					size : $(this).find(':selected').attr('id')
+				}
+			sizeOps(_obj.obj)
+		})
+	
+	
+		function sizeOps(_size){
+			$.ajax({
+				type : 'POST',
+				dataType : 'html',
+				url: "${URLUtils.url('FluidProduct-GetProductAvailability')}",
+				data : _obj.obj
+			}).done(function(data){
+				console.log(data)
+				var data = JSON.parse(data);
+				var x = data.response.productMaster.variationProducts;
+				if(!!x){
+					$('.color_chip_img').each(function(){
+						for(var i = 0; i < x.length; i++){
+						//$('.color_chip_img').removeClass('availableColor');
+							if($(this).attr('title') == x[i].variantColor){
+								$(this).addClass('availableColor');
+							}
+						}
+					$('.error_message').html('');
+					});
+				}else{
+					$('.error_message').html('Other colors in this size is currently not available');
+				}
+			});
+		}
+	
+	}
+	
+});
+</script>
+<style>
+	.color_chip_img {
+		border: 1px solid;
+		cursor: pointer;
+		padding: 3px;
+		float: left;
+		margin: 0 4px 4px 0;
+	}
+	.color_chip_img_active{
+		background:green !important;
+	}
+	.color_chip_wrapper{
+		width:30%;
+	}
+	.size_wrapper {
+		clear: both;
+		display: block;
+		width: 120px;
+		height: 30px;
+		margin-top: 25px;
+		float: left;
+		margin-bottom: 10px;
+	}
+	.not_available{
+		display:none;
+	}
+	.width_wrapper {
+		float: left;
+		clear: both;
+		height: 30px;
+		width:119px;
+	}
+	.widths{
+		float: left;
+		width: 51px;
+		text-align: center;
+		border: 1px solid;
+		margin-right: 4px;
+		margin-bottom: 4px;
+	}
+	.has_width{
+		/*background: black;
+		color: white;*/
+	}
+	.availableColor{
+		background: yellow;
+	}
+	.error_message {
+		float: left;
+		display: block;
+		clear: both;
+		color: red;
+		margin-top: 20px;
+		font-size: 15px;
+	}
+	.no_available_width{
+		display : none;
+	}
+</style>	
+</body>
+
+</html>

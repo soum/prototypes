@@ -1,0 +1,11 @@
+<!--- TEMPLATENAME: orderhistorytest.isml --->
+<isscript>
+importPackage(dw.object);
+importPackage(dw.order);
+
+var token = session.custom.ajaxToken;
+var x = GiftCertificateMgr.getGiftCertificateByMerchantID('00079001').getGiftCertificateCode();
+</isscript>
+
+${x}
+

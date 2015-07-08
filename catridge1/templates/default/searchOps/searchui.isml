@@ -1,0 +1,24 @@
+<!--- TEMPLATENAME: searchui.isml --->
+<div class="search_input">
+	<input type="text" valuue=""/>
+</div>
+<div class="search_button">SEARCH</div>
+<style>
+.search_button{
+	width: 5%;
+	background: black;
+	color: white;
+	text-align: center;
+	padding: 10px;
+	cursor: pointer;
+	font-size:14px;
+	float:left;
+}
+.search_input{
+	float: left;
+}
+.search_input input{
+	height: 30px;
+	width: 250px;
+}
+</style>

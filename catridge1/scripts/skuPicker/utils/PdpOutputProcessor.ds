@@ -1,0 +1,44 @@
+/**
+*-	@input CurrentRequest : dw.system.Request
+*	@input CurrentHttpParameterMap : dw.web.HttpParameterMap
+*	@input primary_product_images : Object
+*	@input variation_information : Object
+*	@input product_thumbnail_images : Object
+*-	@input CurrentSession : dw.system.Session
+*	@output OutputParameter : dw.util.HashMap
+*/
+
+importPackage( dw.system );
+importPackage( dw.util );
+importPackage( dw.web );
+importPackage(dw.catalog);
+
+function execute( pdict : PipelineDictionary ) : Number
+{
+	
+	var _currentHttpParameterMap = pdict.CurrentHttpParameterMap;
+	var _pdpReturnObject = new HashMap();
+	
+	var str = '';
+	var xxx =  _currentHttpParameterMap.outputType.value;
+	switch( _currentHttpParameterMap.outputType.value) {
+		case "variations,mainImage,thumbnails":
+			try{
+				_pdpReturnObject.put("primary_product_images", pdict.primary_product_images);
+				_pdpReturnObject.put("variation_information", pdict.variation_information); 
+				_pdpReturnObject.put("product_thumbnail_images", pdict.product_thumbnail_images);
+			}catch(e){
+				str = e.message;
+			}break
+		case "mainImage,thumbnails":
+			try{
+				_pdpReturnObject.put("primary_product_images", pdict.primary_product_images);
+				_pdpReturnObject.put("product_thumbnail_images", pdict.product_thumbnail_images);
+			}catch(e){
+				str = e.message;
+			}break
+	}
+	
+	pdict.OutputParameter = _pdpReturnObject;
+	return PIPELET_NEXT;
+}

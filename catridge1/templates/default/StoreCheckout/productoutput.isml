@@ -1,0 +1,24 @@
+<isscript>
+ var x_out = JSON.parse(pdict.ouputObj);
+ var out = "";
+ for(var i = 0; i < x_out.chips.length; i++){
+ 	out += '<img src="' + x_out.chips[i].chip_img + '"/>'
+ }
+ 
+ var size_pulldown = '';
+ for(var i = 0; i < x_out.default_selection.length; i++){
+ 	size_pulldown += '<option>' + x_out.default_selection[i].new_size + '</option>'
+ }
+ var width = '';
+ for(var i = 0; i < x_out.default_selection[0].width_group.length; i++){
+ 	width += x_out.default_selection[0].width_group[i]
+ }
+</isscript>
+<isprint value="${out}" encoding="off"/> 
+<select id="">
+<isprint value="${size_pulldown}" encoding="off"/>
+</select>
+
+${width}
+
+

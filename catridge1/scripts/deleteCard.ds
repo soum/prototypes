@@ -1,0 +1,35 @@
+/**
+
+*
+*   @input basketIn : dw.order.Basket
+*   @input cardNumber : String
+*   @output returnObjTest : dw.util.Collection
+*
+*/
+importPackage( dw.system )
+importPackage( dw.order )
+importPackage( dw.util )
+importPackage( dw.object )
+
+function execute( pdict : PipelineDictionary ) : Number
+{
+	
+	var giftcardIDNumber = pdict.cardNumber;
+	
+	var returnItem = pdict.basketIn.getPaymentInstruments(PaymentInstrument.METHOD_GIFT_CERTIFICATE);
+	var x = pdict.returnObjTest;
+	
+	if(!!returnItem){
+		for(var i =0; i < returnItem.length; i++){
+			if(giftcardIDNumber == returnItem[i].giftCertificateID){
+				x = returnItem[i];
+				break;
+			}
+		}
+	}
+	
+	
+	pdict.returnObjTest = x;
+	return PIPELET_NEXT;
+	
+}

@@ -1,0 +1,4 @@
+<isscript>
+var coList = dw.catalog.ProductMgr.getProduct('604990244255').getName();
+</isscript>
+${coList}

@@ -1,0 +1,33 @@
+/**
+*-   @input ExampleIn : String This is a sample comment.
+*   @output checkCo : Object
+*/
+importPackage(dw.system);
+importPackage(dw.util);
+importPackage(dw.object);
+
+
+function execute( pdict : PipelineDictionary ) : Number
+{
+   var coList = CustomObjectMgr.getAllCustomObjects('PHONE_ORDER').asList();
+   
+   var x = new Array();
+   for(var i = 0; i < coList.length; i++){
+   	
+	x[i] = coList[i].custom['ORDER_UPC'];
+   	
+   }
+	
+	//getting the first half before the '_' 
+	
+	var new_x = new Array();
+	for(var i=0;i<x.length; i++){
+	        var arrTemp = x[i].split("_");
+	        new_x[i] = arrTemp[0];
+	}
+	//
+	
+	pdict.checkCo = new_x[2];
+
+   return PIPELET_NEXT;
+}

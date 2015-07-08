@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?demandware-pipeline version="2.0"?>
+
+<pipeline type="view">
+  <branch basename="_ANONYMOUS_BRANCH_1">
+    <segment>
+      <node>
+        <text-node>
+          <description>Grid view</description>
+        </text-node>
+        <node-display x="0" y="1"/>
+      </node>
+    </segment>
+  </branch>
+  <branch basename="PrototypeView">
+    <segment>
+      <node>
+        <start-node name="PrototypeView" secure="false"/>
+        <node-display x="1" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <pipelet-node pipelet-name="GetProduct" pipelet-set-identifier="bc_api">
+          <key-binding alias="Product" key="Product"/>
+          <key-binding alias="'2860839'" key="ProductID"/>
+        </pipelet-node>
+        <node-display x="0" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <call-node start-name-ref="FluidProduct-InitializeProductView"/>
+        <node-display x="0" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <pipelet-node pipelet-name="Script" pipelet-set-identifier="bc_api">
+          <config-property key="Transactional" value="false"/>
+          <config-property key="OnError" value="PIPELET_ERROR"/>
+          <config-property key="ScriptFile" value="skuPicker/processors/ColorChipView.ds"/>
+          <key-binding alias="null" key="ScriptLog"/>
+          <key-binding alias="oProductMaster" key="InputObj"/>
+          <key-binding alias="OutputObj" key="OutputObj"/>
+        </pipelet-node>
+        <node-display x="0" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <interaction-node transaction-required="false">
+          <template buffered="true" dynamic="false" name="skuPicker/ajaxtemplate.isml"/>
+        </interaction-node>
+        <node-display x="0" y="1"/>
+      </node>
+    </segment>
+  </branch>
+  <branch basename="_ANONYMOUS_BRANCH_3">
+    <segment>
+      <node>
+        <text-node>
+          <description>color chip processor..works after it recives the product ID via ajax</description>
+        </text-node>
+        <node-display x="3" y="1"/>
+      </node>
+    </segment>
+  </branch>
+  <branch basename="ProductColorChips">
+    <segment>
+      <node>
+        <start-node call-mode="public" name="ProductColorChips" secure="false"/>
+        <node-display x="4" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <call-node start-name-ref="PdpUtil-PdpInputParameterProcessorHandler"/>
+        <node-display x="0" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <call-node start-name-ref="PdpUtil-GetProduct"/>
+        <node-display x="0" y="1"/>
+        <branch basename="b2" source-connector="invalid_input">
+          <transition target-connector="in2"/>
+          <segment>
+            <node>
+              <join-node/>
+              <node-display x="2" y="0"/>
+            </node>
+            <transition target-connector="in1" target-path="../b3.1"/>
+          </segment>
+        </branch>
+      </node>
+      <simple-transition/>
+      <node>
+        <pipelet-node pipelet-name="Script" pipelet-set-identifier="bc_api">
+          <config-property key="Transactional" value="false"/>
+          <config-property key="OnError" value="PIPELET_ERROR"/>
+          <config-property key="ScriptFile" value="skuPicker/skuProcessor.ds"/>
+          <key-binding alias="null" key="ScriptLog"/>
+          <key-binding alias="variationModel" key="collectionProcessor"/>
+          <key-binding alias="product" key="product"/>
+          <key-binding alias="variationModel" key="variationModel"/>
+        </pipelet-node>
+        <node-display x="0" y="1"/>
+        <branch basename="b3" source-connector="error">
+          <transition target-connector="in2"/>
+          <segment>
+            <node>
+              <join-node/>
+              <node-display x="2" y="0"/>
+            </node>
+            <simple-transition/>
+            <node>
+              <interaction-node transaction-required="false">
+                <template buffered="true" dynamic="false" name="error.isml"/>
+              </interaction-node>
+              <node-display x="0" y="1"/>
+            </node>
+          </segment>
+        </branch>
+      </node>
+      <simple-transition>
+        <transition-display>
+          <bend-point relative-to="source" x="0" y="1"/>
+        </transition-display>
+      </simple-transition>
+      <node>
+        <interaction-node transaction-required="false">
+          <template buffered="true" dynamic="false" name="skuPicker/collectionProcessor.isml"/>
+        </interaction-node>
+        <node-display x="0" y="1"/>
+      </node>
+    </segment>
+  </branch>
+  <branch basename="_ANONYMOUS_BRANCH_5">
+    <segment>
+      <node>
+        <text-node>
+          <description>Returns variation sizes</description>
+        </text-node>
+        <node-display x="9" y="1"/>
+      </node>
+    </segment>
+  </branch>
+  <branch basename="VariationSizeOptions">
+    <segment>
+      <node>
+        <start-node name="VariationSizeOptions" secure="false"/>
+        <node-display x="10" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <call-node start-name-ref="PdpUtil-PdpInputParameterProcessorHandler"/>
+        <node-display x="0" y="1"/>
+        <branch basename="b2" source-connector="invalid_input">
+          <transition target-connector="in2"/>
+          <segment>
+            <node>
+              <join-node/>
+              <node-display x="2" y="2"/>
+            </node>
+            <simple-transition>
+              <transition-display>
+                <bend-point relative-to="source" x="0" y="1"/>
+              </transition-display>
+            </simple-transition>
+            <node>
+              <interaction-node transaction-required="false">
+                <template buffered="true" dynamic="false" name="error.isml"/>
+              </interaction-node>
+              <node-display x="0" y="1"/>
+            </node>
+          </segment>
+        </branch>
+      </node>
+      <simple-transition>
+        <transition-display>
+          <bend-point relative-to="source" x="0" y="1"/>
+        </transition-display>
+      </simple-transition>
+      <node>
+        <call-node start-name-ref="PdpUtil-InitializePdpSkuPickerView"/>
+        <node-display x="0" y="1"/>
+        <branch basename="b3" source-connector="pass">
+          <transition target-connector="in"/>
+          <segment>
+            <node>
+              <call-node start-name-ref="PdpUtil-PdpOutputProcessor"/>
+              <node-display x="0" y="1"/>
+            </node>
+            <simple-transition/>
+            <node>
+              <interaction-node transaction-required="false">
+                <template buffered="true" dynamic="false" name="skuPicker/sizeoutput.isml"/>
+              </interaction-node>
+              <node-display x="0" y="1"/>
+            </node>
+          </segment>
+        </branch>
+      </node>
+    </segment>
+  </branch>
+  <branch basename="_ANONYMOUS_BRANCH_7">
+    <segment>
+      <node>
+        <text-node>
+          <description>pdp prototype pulldown view</description>
+        </text-node>
+        <node-display x="0" y="7"/>
+      </node>
+    </segment>
+  </branch>
+  <branch basename="PdpPulldownView">
+    <segment>
+      <node>
+        <start-node name="PdpPulldownView" secure="false"/>
+        <node-display x="1" y="7"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <pipelet-node pipelet-name="GetProduct" pipelet-set-identifier="bc_api">
+          <key-binding alias="Product" key="Product"/>
+          <key-binding alias="'2860839'" key="ProductID"/>
+        </pipelet-node>
+        <node-display x="0" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <call-node start-name-ref="FluidProduct-InitializeProductView"/>
+        <node-display x="0" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <pipelet-node pipelet-name="Script" pipelet-set-identifier="bc_api">
+          <config-property key="Transactional" value="false"/>
+          <config-property key="OnError" value="PIPELET_ERROR"/>
+          <config-property key="ScriptFile" value="skuPicker/processors/ColorChipPullDownView.ds"/>
+          <key-binding alias="null" key="ScriptLog"/>
+          <key-binding alias="oProductMaster" key="ObjIn"/>
+          <key-binding alias="ObjOut" key="ObjOut"/>
+        </pipelet-node>
+        <node-display x="0" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <interaction-node transaction-required="false">
+          <template buffered="true" dynamic="false" name="skuPicker/ajaxtemplatepulldown.isml"/>
+        </interaction-node>
+        <node-display x="0" y="1"/>
+      </node>
+    </segment>
+  </branch>
+</pipeline>
